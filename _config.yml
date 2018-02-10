@@ -4,8 +4,8 @@
 # ---------------------------------------------------------------
 
 # Site
-title: chen2liang4
-subtitle: Toughts log
+title: chen2liang4's thoughts log
+subtitle: search invisble forces on software 
 description:
 author: Chen Liang
 # Support language: de, en, fr-FR, id, ja, ko, pt-BR, pt, ru, zh-Hans, zh-hk, zh-tw
@@ -78,7 +78,7 @@ plugins:
 favicon: /assets/favicon.ico
 
 # Set default keywords (Use a comma to separate)
-keywords: "Jekyll, NexT"
+keywords: "chen2liang4, software, management, programming, design"
 
 # Set rss to false to disable feed link.
 # Leave rss as empty to use site's feed link.
@@ -232,7 +232,7 @@ social_icons:
 
 # Sidebar Avatar
 # in directory: /assets/images/avatar.gif
-#avatar:
+# avatar:
 
 
 # Table Of Contents in the Sidebar
@@ -379,7 +379,7 @@ han: false
 
 # Disqus
 disqus:
-  enable: false
+  enable: true
   shortname:
   count: true
   # hide comments (visitors need to click to load the comments)
