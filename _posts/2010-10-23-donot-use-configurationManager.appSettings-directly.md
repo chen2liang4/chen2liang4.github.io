@@ -9,7 +9,7 @@ ConfigurationManager.AppSettings可以很方便的获取应用程序配置文件
 int MarginX = int.Parse(ConfigurationManager.AppSettings["MarginX"]);
 ```
 如果没有配置MarginX的话，会得到一个ArgumentNullException；如MarginX配置的不是一个数字，会得到一个ArgumentException。这时也不要假设能很快地定位到问题所在，在日志中看到这样的Exception，是不会明白其实这是一个简单的配置错误；也不是什么环境下都能让我们去debug，打个断点就能跟踪进去。所以我们可以对这种操作进行封装一下：
-```C#
+```c#
 public class ConfigSetting
 {
     public static int GetMarginX()
