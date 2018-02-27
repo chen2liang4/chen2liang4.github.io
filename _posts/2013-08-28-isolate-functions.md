@@ -9,7 +9,7 @@ title: 保持函数/方法的独立性
 4. 热代码部署（Hot code deployment）
 
 下图描述了单元测试的场景：  
-![SUT-DOC](images/SUT.png)  
+![SUT-DOC](/images/SUT.png)  
 图片来自于 xUnit Test Patterns – Refactoring Test Code一书
 
 Setup，Exercise，Verify和Teardown是进行单元测试的典型过程。  
