@@ -31,10 +31,11 @@ I’d like to re-factor it without complex implement, like import extra class or
 
 ## Use array
 ```c#
-string[,] leaveTypes = {{"Annual Leave", "AnnualLeaveAvailable", "AnnualLeaveApproved"},
+string[,] leaveTypes = {
+                        {"Annual Leave", "AnnualLeaveAvailable", "AnnualLeaveApproved"},
                         {"SickLeave with Pay", "SickLeavewithPayAvailable", "SickLeaveWithPayApproved"},
                         {"SwapOT", "SwapOTAvailable", "SwapOTApproved"}
-                        };
+                       };
 for (var i = 0; i < leaveTypes.GetLength(0); i++)
 {
     if (leaveTypes[i, 0] == leaveType)
