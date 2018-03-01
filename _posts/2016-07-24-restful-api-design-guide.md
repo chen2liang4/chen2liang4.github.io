@@ -10,17 +10,22 @@ This guide documents guidelines, recommendations and best practices for designin
 
 ## URI
 ### Root path
-Provide a root path for all APIs in case that API are mixed with web page or other web resources, e.g:  
-https://api.example.com/ https://example.com/api/   
+Provide a root path for all APIs in case that API are mixed with web page or other web resources, e.g:
+* https://api.example.com/ 
+* https://example.com/api/
+
 We also need to distinguish API and AJAX request. AJAX request is designed for web interaction, but API is designed for all possible clients. So DO NOT put AJAX request into API.
 
 ### Version
-Use version if you can't guarantee API consumers be able to upgrade to the latest version you release, e.g:  
-https://example.com/api/v1/ https://example.com/api/latest/   
+Use version if you can't guarantee API consumers be able to upgrade to the latest version you release, e.g:
+* https://example.com/api/v1/ 
+* https://example.com/api/latest/
 
 ### Path formats
-Use downcased and dash-seperated path name, e.g:  
-https://example.com/api/v1/users https://example.com/api/v1/user-types   
+Use downcased and dash-seperated path name, e.g:
+* https://example.com/api/v1/users
+* https://example.com/api/v1/user-types 
+
 Regarding query parameters which often will be mapped to properties of a class, choose one style which is compatible with your framework, like camelCase.
 
 ## Authentication
@@ -50,61 +55,63 @@ Sub-resource is owned by the parent, and addressed through parent id.
 
 Sub-resource should have N:1 relation with the parent.  
 Object relations with sub-resource:
-* Composition. whole and part relation, the parent owns child, and they have same life cycle. when the resource is deleted, the sub-resource will disappear too. E.g, user and address, house and room. Resources with composition relation should be sub-resource
-* Aggregation. The resource own sub-resource, but they have separate life cycle. E.g, department and teacher. The aggregation relation could be sub-resource, but has not to be. If path is too deep, the relation is not strong, the child will be accessed without parent frequently, we should consider not to use sub-resource.
-* Association. No owner in association relation. Like teacher and student, a teacher teaches many student, but a student is taught by many teachers. So we can say a teacher owns a student, then the student is not sub-resource of the teacher.
+* **Composition**. whole and part relation, the parent owns child, and they have same life cycle. when the resource is deleted, the sub-resource will disappear too. E.g, user and address, house and room. Resources with composition relation should be sub-resource
+* **Aggregation**. The resource own sub-resource, but they have separate life cycle. E.g, department and teacher. The aggregation relation could be sub-resource, but has not to be. If path is too deep, the relation is not strong, the child will be accessed without parent frequently, we should consider not to use sub-resource.
+* **Association**. No owner in association relation. Like teacher and student, a teacher teaches many student, but a student is taught by many teachers. So we can say a teacher owns a student, then the student is not sub-resource of the teacher.
 
 Alternative approach for composite sub-resource is anchor, e.g.:  
-https://example.com/api/v1/users/23#address   
+* https://example.com/api/v1/users/23#address   
 
 **NOTE** It's better to address one sub-resource only via one parent level. Be careful with sub-resource with deep hierarchy.
-https://example.com/api/v1/departments/3/teachers/54/address  
+* https://example.com/api/v1/departments/3/teachers/54/address  
 
 Sub-resource could be first resource.  
-https://example.com/api/v1/teachers/54 
+* https://example.com/api/v1/teachers/54 
 
 ### Non-CRUD actions
 Ideal RESTful API only provides CRUD operations by HTTP methods. We have to escape some operations to CRUD through various approaches, like treating an operation as a new resource. We think that it's more practical to allow non-CRUD actions and put it in URL. The action should appended to resource URI  
-https://example.com/api/v1/articles/3/like  
-https://example.com/api/v1/users/23/password/reset   
+* https://example.com/api/v1/articles/3/like  
+* https://example.com/api/v1/users/23/password/reset   
 
 Alternative convention is place a actions prefix to delineate resource  
-https://example.com/api/v1/articles/3/actions/like  
-https://example.com/api/v1/users/23/password/actions/reset   
+* https://example.com/api/v1/articles/3/actions/like  
+* https://example.com/api/v1/users/23/password/actions/reset   
 
 However, do not use non-CRUD actions only because that it's simple for design. RESTful API is resource-centric, first we should consider if there is a resource suit for the special action, and if we need to create one. Only if it's hard to do that, or created resource is not easy to understand, then we will take the approach of non-CRUD actions.
 
 ### Action Resource
 Action resource represents a business capabilities, complex operation or process. It's hard to be mapped to one entity resource, and usually it involves more than one entity resource. If only one entity resource involved, consider entity resource with non-CRUD action. Action resource can be tracked and related data could be persisted. Use nouns or verbs to name action resource.  
-https://example.com/api/v1/order-search?status=closed  
-https://example.com/api/v1/user-entrollments  
-https://exmaple.com/api/v1/refund
+* https://example.com/api/v1/order-search?status=closed  
+* https://example.com/api/v1/user-entrollments  
+* https://exmaple.com/api/v1/refund
 
 As entity resource with non-CRUD action, we also be careful with the design of action resource, in case that a resource-centric architecture evolve to an action-centric one, then we'll lose many advantages.
 
 #### Non-CRUD actions vs. Action Resource
 These two are alikely, e.g.:
-https://example.com/api/v1/order-search?status=closed   
-https://example.com/api/v1/orders/search?status=closed   
+* https://example.com/api/v1/order-search?status=closed   
+* https://example.com/api/v1/orders/search?status=closed   
 
 Action Resource has same level with the resource which Non-CRUD actions append to.   
 And Non-CRUD actions usually response the resource that it append to.
 
 ### Gateway Resource
 Entity resource and action resource possess atomic. Gateway resource work as on facade of these entity resources and action resources. We can design a gateway resource for one long process which involves couple of resource requests, or for reducing interactions between API client and server (e.g.: need to get many resources immediately after posting one request for rendering one UI page).  
-https://example.com/api/v1/homepage   
+* https://example.com/api/v1/homepage   
 
 Avoiding to design API for UI request. Otherwise, we'll lose reusability. The architect should mainly be comprised by entity resources, then action resources, then gateway resource.
 
 ## Request
 Use HTTP standard methods below, JSON payload and accept JSON by default.
 ### HTTP methods
-| Verb   | Usage  | Safe | Idempotent | Notes |
-| GET    | Read   | Yes  | Yes        | All safe operation should use GET method |
-| POST   | Create |      |            | Create a new resource |
-| PUT    | Update |      | Yes        | Update a resource |
-| PATCH  | Update |      | Yes        | Update part of a resource |
-| DELETE | Delete |      | Yes        | Delete a resource |
+  
+| **Verb** | **Usage** | **Safe** | **Idempotent** | **Notes** |
+|----------|-----------|----------|----------------|-----------| 
+| GET      | Read      | Yes      | Yes            | All safe operation should use GET method |
+| POST     | Create    |          |                | Create a new resource |
+| PUT      | Update    |          | Yes            | Update a resource |
+| PATCH    | Update    |          | Yes            | Update part of a resource |
+| DELETE   | Delete    |          | Yes            | Delete a resource |
 
 For safe operations, use GET methods then benefit from HTTP features, like cache.
 
@@ -222,16 +229,16 @@ Response
 
 ### Filtering
 Use filtering to reduce resource number of response.  
-GET /orders?user=234&status=closed   
-GET /ptos/search?user=234&status=closed  
+* GET /orders?user=234&status=closed   
+* GET /ptos/search?user=234&status=closed  
 
 ### Sorting
 Sorting is supported in the sort query parameter, by default it's ascending. To specify the sorting use "-" or "+" sign. e.g.:  
-GET /orders?user=234&sort=+name GET /orders?user=234&sort=+name,-createdtime   
+* GET /orders?user=234&sort=+name GET /orders?user=234&sort=+name,-createdtime   
 
 Alternative approach use "sort" and "order" two query parameters, e.g.:  
-GET /orders?user=234&sort=name&order=asc  
-GET /orders?user=234&sort=name,createdtime&order=asc,desc 
+* GET /orders?user=234&sort=name&order=asc  
+* GET /orders?user=234&sort=name,createdtime&order=asc,desc 
 
 ### Paging
 Use paging to limit the response size for resources that return a potentialy large collection of items. A request to a paged API will result in a values array wrapped in a JSON object.  
@@ -258,8 +265,8 @@ Response
 ```
 ### Cache
 HTTP cache
-* Squid
-* Traffic Server
+* [Squid](http://www.squid0-cache.org/)
+* [Traffic Server](http://incubator.apache.org/projects/trafficserver.html)
 These cache server improves performance without touching code, but API should set expires and Cache-control response header well.
 
 ### Concurrency
@@ -338,15 +345,17 @@ Return if business rule fails, such as password don't match rule, the user canno
 The server fails
 
 Decision [TBD] if involving business violation. like not found resource in the request. E.g, post /transaction/transfer, but can't find receiver. This should be 404 or 409.
-| Request Method | Scenario | Response Status | Response Payload |
-| GET            | retrieve resource | 200 | requested resource |
-| GET            | long time retrieve resource | 202 | asynchronous task resource |
-| POST           | request action/gateway resource | 200 | corresponding resources or no content |
-| POST           | create an entity resource | 201 | created resource |
-| POST           | long time action | 202 | asynchronous task resource |
-| PUT            | update a resource | 200 | updated resource |
-| PATCH          | patially update a resource | 200 | updated resource |
-| DELETE         |delete an exsiting resource | 204 | no content |
+
+| **Request Method** | **Scenario**                    | **Response Status** | **Response Payload** |
+|--------------------|---------------------------------|---------------------|----------------------|
+| GET                | retrieve resource               | 200                 | requested resource |
+| GET                | long time retrieve resource     | 202                 | asynchronous task resource |
+| POST               | request action/gateway resource | 200                 | corresponding resources or no content |
+| POST               | create an entity resource       | 201                 | created resource |
+| POST               | long time action                | 202                 | asynchronous task resource |
+| PUT                | update a resource               | 200                 | updated resource |
+| PATCH              | patially update a resource      | 200                 | updated resource |
+| DELETE             | delete an exsiting resource     | 204                 | no content |
 
 ### API Errors
 When any errors occurred (4xx or 500 status), provide detail in the body of the response beside status code in the following format:
@@ -494,6 +503,7 @@ Also refer to [REST Security Cheat Sheet](https://www.owasp.org/index.php/REST_S
 ### Documents
 * [RAML](http://raml.org/), With RAML and its tools to design and document API, such as [API Workbench](http://apiworkbench.com/), [API Console](https://github.com/mulesoft/api-console)
 * [Swagger](http://swagger.io/)
+
 ### JSON validator
 TBD
 
