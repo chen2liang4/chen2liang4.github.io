@@ -17,7 +17,7 @@ Jenkins负责编译和部署应用。
 3. FooApp  
 FooApp是需要发布使用的一块app，其需要的机密信息保存在vault的'secret/FooApp'路径下面。
 
-## 基本流程
+## 基本Workflow
 ![AppRole auth method workflow](https://www.vaultproject.io/assets/images/vault-approle-workflow-28b761b2.png)  
 [完整代码](https://github.com/chen2liang4/vault-practice/blob/master/test_approle_basic_workflow.py)  
 ### Vault Admin为应用创建role和Policy  
@@ -89,7 +89,7 @@ def read_secret(self):
 1. 需要权衡Role ID和Secret ID的安全性。
 2. Role ID和Secret ID是放在一起的，丢失的话有安全隐患。
 
-## Advanced
+## 使用Wrapping Token的Workflow
 ![AppRole auth method workflow](https://www.vaultproject.io/assets/images/vault-approle-workflow2-9e6751e3.png)  
 [完整代码](https://github.com/chen2liang4/vault-practice/blob/master/test_approle_advanced_workflow.py)  
 在这个工作流中，不再把Secret ID部署到app中。而是把Secret ID保存在Vault中，给app一个Wrapping Token去获取Secret ID。Wrapping Token是Vault的一个特性，可以将信息保存在一个叫CubbyHole的地方，只有使用Wrapping Token才能取得里面的内容，即使Admin都没有权限。  
@@ -114,10 +114,11 @@ def get_secret_id(self):
 ### 优点
 1. Role ID和Secret ID分离。
 2. Secret ID保存在CubbyHole中，只有使用Wrapping token才能得到。
+
 ### 缺点
 1. Wrapping token是一次性使用的。也就是说app如果需要多次读取Secret信息，则需要自己保存Secret ID。当app重启，也需要重新生成Wrapping token并注入app。
 
-## Evolved
+## 使用Role Token的工作流
 ![AppRole auth method workflow](/images/vault-approle-evolved-workflow.JPG)  
 [完整代码](https://github.com/chen2liang4/vault-practice/blob/master/test_approle_evolved_workflow.py)  
 针对Wrapping token只能使用一次的情况，我们可以使用一个可重复使用的token来替换。 
@@ -165,7 +166,7 @@ def get_secret_id(self):
 
 这种工作流解决了Wrapping token一次性使用的问题，Secret ID也是使用时才生成，而且是一次性使用的，和放在CubbyHole中相比安全性也不差。因为每次登录都要先生成Secret，性能上有所影响。
 
-## Ultimated
+## Push模式Workflow
 ![AppRole auth method workflow](/images/vault-approle-ultimate-workflow.JPG)  
 上面的workflow中都在App中常驻了敏感信息，如Secret ID，Wrapping token或者Role token。我们可以建立一个token provide服务，当app需要的时候发出请求，返回Wrapping token或role token。问题又转换成了token provide服务如何验证请求的合法性。如果再分配一个token或者什么凭证，就成了“蛋生鸡-鸡生蛋”的问题。  
 换个思路思考下，token provide服务可以在收到请求后，不返回token，而是将token注入到app中，就像Jenkins部署Role ID一样。这样就不用去验证请求的合法性，因为不用担心给伪造者返回token。  
