@@ -84,13 +84,14 @@ def read_secret(self):
 1. 使用Role可以方便地管理各个应用的Secret信息和权限。
 2. AppRole要求登录认证，并有记录。
 3. Token的生命周期可以设定，或者指定使用次数。如果发现token泄露，Vault Admin可以立刻使token失效。应用只需重新登录得到最新有效的token，无需重新部署。例子中的policy就设定了token只能使用一次，token_nums_use=1。
+
 ### 缺点
 1. 需要权衡Role ID和Secret ID的安全性。
 2. Role ID和Secret ID是放在一起的，丢失的话有安全隐患。
 
 ## Advanced
 ![AppRole auth method workflow](https://www.vaultproject.io/assets/images/vault-approle-workflow2-9e6751e3.png)  
-[完整代码](https://github.com/chen2liang4/vault-practice/blob/master/test_approle_advanced_workflow.py)
+[完整代码](https://github.com/chen2liang4/vault-practice/blob/master/test_approle_advanced_workflow.py)  
 在这个工作流中，不再把Secret ID部署到app中。而是把Secret ID保存在Vault中，给app一个Wrapping Token去获取Secret ID。Wrapping Token是Vault的一个特性，可以将信息保存在一个叫CubbyHole的地方，只有使用Wrapping Token才能取得里面的内容，即使Admin都没有权限。  
 图中的Trusted Entity就是例子中的Jenkins，也可以是Kubernates这样的工具。  
 使用Wrapping token非常简单，Jenkins的get_role方法需要调整成这样：
