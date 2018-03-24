@@ -173,8 +173,8 @@ def get_secret_id(self):
 这个方案的坏处就是需要去实现一个这样的服务。
 
 
-### 参考资料
-[AppRole pulling authentication](https://www.vaultproject.io/guides/identity/authentication.html)
-[Reading Vault Secrets in your Jenkins pipeline](http://nicolas.corrarello.com/general/vault/security/ci/2017/04/23/Reading-Vault-Secrets-in-your-Jenkins-pipeline.html)
-[Vault Python client hvac](https://github.com/ianunruh/hvac/blob/master/hvac/tests/test_integration.py)
-[Cubbyhole mode](https://www.hashicorp.com/blog/cubbyhole-authentication-principles)
+## 参考资料
+1. [AppRole pulling authentication](https://www.vaultproject.io/guides/identity/authentication.html)
+2. [Reading Vault Secrets in your Jenkins pipeline](http://nicolas.corrarello.com/general/vault/security/ci/2017/04/23/Reading-Vault-Secrets-in-your-Jenkins-pipeline.html)
+3. [Vault Python client hvac](https://github.com/ianunruh/hvac/blob/master/hvac/tests/test_integration.py)
+4. [Cubbyhole mode](https://www.hashicorp.com/blog/cubbyhole-authentication-principles)
